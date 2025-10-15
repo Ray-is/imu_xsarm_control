@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>imu_arm_control</name>
+  <version>0.0.1</version>
+  <description>Package to use continuous data form an IMU to control an interbotix arm.</description>
+  <maintainer email="rayneralla@icloud.com">ray</maintainer>
+  <license>TODO: License declaration</license>
+
+  <depend>bno055</depend>
+  <depend>interbotix_common_modules</depend>
+  <depend>interbotix_common_sim</depend>
+  <depend>interbotix_common_toolbox</depend>
+  <depend>interbotix_gravity_compensation</depend>
+  <depend>interbotix_moveit_interface</depend>
+  <depend>interbotix_moveit_interface_msgs</depend>
+  <depend>interbotix_ros_xsarms</depend>
+  <depend>interbotix_ros_xsarms_examples</depend>
+  <depend>interbotix_ros_xseries</depend>
+  <depend>interbotix_tf_tools</depend>
+  <depend>interbotix_xs_driver</depend>
+  <depend>interbotix_xs_modules</depend>
+  <depend>interbotix_xs_msgs</depend>
+  <depend>interbotix_xs_ros_control</depend>
+  <depend>interbotix_xs_rviz</depend>
+  <depend>interbotix_xs_sdk</depend>
+  <depend>interbotix_xs_toolbox</depend>
+  <depend>interbotix_xsarm_control</depend>
+  <depend>interbotix_xsarm_descriptions</depend>
+  <depend>interbotix_xsarm_dual</depend>
+  <depend>interbotix_xsarm_gravity_compensation</depend>
+  <depend>interbotix_xsarm_joy</depend>
+  <depend>interbotix_xsarm_moveit</depend>
+  <depend>interbotix_xsarm_moveit_interface</depend>
+  <depend>interbotix_xsarm_puppet</depend>
+  <depend>interbotix_xsarm_ros_control</depend>
+  <depend>interbotix_xsarm_sim</depend>
+
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
