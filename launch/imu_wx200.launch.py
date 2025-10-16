@@ -45,10 +45,11 @@ def generate_launch_description():
 
     # Launch the bno055 driver, and tell ros to re-launch it if it is killed
     imu_config = os.path.join(
-        get_package_share_directory('bno055'),
-        'config',
+        get_package_share_directory('imu_arm_control'),
+        'launch',
         'bno055_params.yaml'
-        )  
+        )
+    
     bno055_driver_node=Node(
         package = 'bno055',
         executable = 'bno055',
