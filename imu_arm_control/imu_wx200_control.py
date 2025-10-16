@@ -10,19 +10,17 @@ from pynput import keyboard
 class ArmController(Node):
 
     """
-    Init method: initializes robot and IMU data.
-
+    Init method: initializes robot, IMU data, and keyboard
     """
     def __init__(self):
         super().__init__('imu_arm_control_node')
 
         ### PARAMS ###
-        self.alpha = 0.05                       # scaling factor for controlling the arm
+        self.alpha = 0.055                      # scaling factor for controlling the arm
         self.micro_move_time = 0.1              # how long each micro-move should take - should be short
         self.large_move_time = 2.0              # how long a large move should take - should be long
         self.imu_timeout = 0.5                  # if we haven't recieved data for this long, restart the IMU node
         self.imu_watchdog_period = 1.0          # how frequently to check if we need to restart the IMU node
-
 
         # Initialize robot
         self.bot = InterbotixManipulatorXS(
@@ -45,10 +43,10 @@ class ArmController(Node):
         )
         self.imu_watchdog = self.create_timer(self.imu_watchdog_period, self.imu_watchdog_cb)
 
-
         # Initialize keyboard
         self.listener = keyboard.Listener(on_press=self.on_key_press)
         self.listener.start()
+
 
     """
     Callback that runs when a key is pressed
@@ -75,8 +73,8 @@ class ArmController(Node):
     def listener_callback(self, msg : Imu):
         if self.enable_imu:
             self.target_positions[0] += self.alpha * msg.angular_velocity.z
-            self.target_positions[2] += self.alpha * msg.angular_velocity.x
-            self.target_positions[3] += self.alpha * msg.angular_velocity.y
+            self.target_positions[2] += self.alpha * msg.angular_velocity.y
+            self.target_positions[3] += self.alpha * msg.angular_velocity.x
             self.bot.arm.set_joint_positions(self.target_positions, moving_time=self.micro_move_time, blocking=False)
         self.last_msg_time = time.time()
 
@@ -89,7 +87,8 @@ class ArmController(Node):
         if time.time() - self.last_msg_time > self.imu_timeout:
             self.get_logger().warn("Restarting IMU Driver...")
             subprocess.run(['pkill', '-f', 'bno055'])  # stop the IMU node, and it will automatically be rerun with the respawn
-            
+
+
     """
     Destroys IMU subscription,
     Moves the robot to sleep pose,
@@ -102,6 +101,7 @@ class ArmController(Node):
         time.sleep(0.01)  # just to be safe
         robot_shutdown()
 
+
     """
     Moves the robot to home pose,
     then sets the target position to all zeros (home pose),
@@ -112,6 +112,8 @@ class ArmController(Node):
         self.bot.arm.go_to_home_pose(moving_time=self.large_move_time)
         for i in range(len(self.target_positions)): self.target_positions[i] = 0.0
         self.enable_imu = True
+
+
 
 
 def main(args=None):

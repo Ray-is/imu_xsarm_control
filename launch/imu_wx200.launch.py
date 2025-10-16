@@ -2,19 +2,14 @@ from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
     IncludeLaunchDescription,
-    OpaqueFunction,
 )
-from launch.conditions import IfCondition, LaunchConfigurationEquals
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import (
     LaunchConfiguration,
     PathJoinSubstitution,
-    PythonExpression,
-    TextSubstitution,
 )
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-import yaml
 import os
 from ament_index_python.packages import get_package_share_directory
 
@@ -48,15 +43,18 @@ def generate_launch_description():
         }.items(),
     )
 
-    # Launch the bno055 driver
-    bno055_driver_launch_include = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            PathJoinSubstitution([
-                FindPackageShare('bno055'),
-                'launch',
-                'bno055.launch.py'
-            ])
-        ]),
+    # Launch the bno055 driver, and tell ros to re-launch it if it is killed
+    imu_config = os.path.join(
+        get_package_share_directory('bno055'),
+        'config',
+        'bno055_params.yaml'
+        )  
+    bno055_driver_node=Node(
+        package = 'bno055',
+        executable = 'bno055',
+        parameters = [imu_config],
+        respawn=True,
+        respawn_delay=2.0
     )
 
     # Launch this node
@@ -70,7 +68,7 @@ def generate_launch_description():
     return LaunchDescription([
         use_sim_arg,
         xsarm_control_launch_include,
-        bno055_driver_launch_include,
+        bno055_driver_node,
         imu_arm_control_node
 
     ])
